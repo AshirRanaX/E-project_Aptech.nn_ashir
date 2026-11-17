@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alberto Watch Company | Authorized Luxury Retailer & Service</title>
+  
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="iconpic.png">
+  <script>
+    /* Apply the saved theme before first paint (dark is the default) */
+    (function () {
+      var t = 'dark';
+      try { t = localStorage.getItem('alberto_theme') || 'dark'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+    })();
+  </script>
+  <!-- Stylesheet Link -->
+  <link rel="stylesheet" href="remastered.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. MAIN NAVIGATION BAR
+       ========================================== -->
+  <nav class="navigation-bar" id="main-navigation">
+    <a href="#hero" class="brand-logo-container">
+      <div class="logo-circle-mark"><img src="iconpic.png" alt=""></div>
+      <div class="logo-text-group">
+        ALBERTO<span>WATCH CO.</span>
+      </div>
+    </a>
+    
+    <ul class="nav-menu-links" id="navMenuLinks">
+      <li><a href="#hero" class="nav-link active">Home</a></li>
+      <li><a href="#exploded-scroll" class="nav-link">Mechanics</a></li>
+      <li><a href="#product-catalog-section" class="nav-link">Products</a></li>
+      <li><a href="#technology-section" class="nav-link">Technology</a></li>
+      <li><a href="#services-repair-section" class="nav-link">Services</a></li>
+      <li><a href="#price-list-section" class="nav-link">Price List</a></li>
+      <li><a href="#gallery-section" class="nav-link">Gallery</a></li>
+      <li><a href="#about-contact-section" class="nav-link">About &amp; Contact</a></li>
+    </ul>
+
+    <div class="nav-actions-container">
+      <!-- Theme Switcher Toggle Button -->
+      <button class="theme-toggle-btn" id="themeToggleButton" onclick="toggleWebsiteTheme()" aria-label="Switch to light theme" title="Switch theme">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      </button>
+
+      <!-- Mobile menu button -->
+      <button class="menu-toggle" id="menuToggleBtn" onclick="toggleMobileMenu()" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenuLinks">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <!-- Shopping Cart Trigger Button -->
+      <button class="shopping-bag-btn" onclick="toggleCartDrawer()" aria-label="Shopping Bag">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="shopping-cart-badge" id="cartBadgeCount">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       2. SLIDE-OVER SHOPPING BAG + CHECKOUT
+       ========================================== -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay" onclick="closeCartDrawerOnOverlay(event)">
+    <div class="cart-drawer-panel" id="cartDrawerPanel" data-step="bag" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
+
+      <div class="cart-drawer-header">
+        <button class="cart-back-btn" id="cartBackBtn" onclick="backToBag()" aria-label="Back to bag"><i class="fa-solid fa-arrow-left"></i></button>
+        <h3 id="cartDrawerTitle">YOUR SHOPPING BAG (0)</h3>
+        <button class="cart-close-btn" onclick="closeCartDrawer()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <ol class="checkout-steps" id="checkoutSteps" aria-label="Checkout progress">
+        <li data-step="bag" class="active">1 · Bag</li>
+        <li data-step="checkout">2 · Checkout</li>
+        <li data-step="done">3 · Confirmed</li>
+      </ol>
+
+      <!-- VIEW 1: BAG -->
+      <div class="cart-view" id="cartViewBag">
+        <div class="cart-drawer-items" id="cartItemsContainer"></div>
+        <div class="cart-drawer-footer">
+          <div class="cart-summary-row"><span>Subtotal</span><span id="cartSubtotalText">$0.00</span></div>
+          <div class="cart-summary-row"><span>Estimated Tax (8%)</span><span id="cartTaxText">$0.00</span></div>
+          <div class="cart-summary-row total-row"><span>Estimated Total</span><span id="cartTotalText">$0.00</span></div>
+          <p class="cart-note">Insured shipping is calculated at checkout.</p>
+          <button class="checkout-btn" id="proceedCheckoutBtn" onclick="goToCheckout()">PROCEED TO CHECKOUT</button>
+        </div>
+      </div>
+
+      <!-- VIEW 2: CHECKOUT -->
+      <div class="cart-view" id="cartViewCheckout">
+        <form id="checkoutForm" novalidate autocomplete="on">
+          <div class="checkout-scroll">
+
+            <fieldset class="co-section">
+              <legend>Order Summary</legend>
+              <div class="co-summary-items" id="checkoutItems"></div>
+            </fieldset>
+
+            <fieldset class="co-section">
+              <legend><span class="num">1</span> Contact</legend>
+              <div class="co-grid">
+                <div class="co-field full"><label for="coName">Full name</label><input id="coName" name="name" type="text" autocomplete="name" maxlength="60" placeholder="e.g. Alberto Rossi"><small class="co-error"></small></div>
+                <div class="co-field"><label for="coEmail">Email</label><input id="coEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com"><small class="co-error"></small></div>
+                <div class="co-field"><label for="coPhone">Phone</label><input id="coPhone" name="phone" type="tel" autocomplete="tel" placeholder="+1 212 555 0100"><small class="co-error"></small></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="co-section">
+              <legend><span class="num">2</span> Delivery</legend>
+              <div class="option-list" id="shippingOptions">
+                <label class="option-card">
+                  <input type="radio" name="shipping" value="standard" checked>
+                  <i class="fa-solid fa-truck-fast opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Insured Standard</span><span class="opt-sub">3–5 business days · signature required · free over $1,000</span></span>
+                  <span class="opt-price" data-ship-price="standard">$25.00</span>
+                </label>
+                <label class="option-card">
+                  <input type="radio" name="shipping" value="express">
+                  <i class="fa-solid fa-bolt opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Insured Express</span><span class="opt-sub">Next business day · signature required</span></span>
+                  <span class="opt-price" data-ship-price="express">$60.00</span>
+                </label>
+                <label class="option-card">
+                  <input type="radio" name="shipping" value="pickup">
+                  <i class="fa-solid fa-store opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Boutique Pickup</span><span class="opt-sub">740 Fifth Avenue, Suite 1200, New York · ready in 24h</span></span>
+                  <span class="opt-price" data-ship-price="pickup">Free</span>
+                </label>
+              </div>
+
+              <div class="co-grid" id="shippingAddressGroup" style="margin-top:14px">
+                <div class="co-field full"><label for="coCountry">Country</label>
+                  <select id="coCountry" name="country" autocomplete="country-name">
+                    <option>United States</option><option>Canada</option><option>United Kingdom</option><option>United Arab Emirates</option>
+                    <option>Pakistan</option><option>Saudi Arabia</option><option>Switzerland</option><option>Germany</option>
+                    <option>France</option><option>Australia</option><option>Other</option>
+                  </select><small class="co-error"></small></div>
+                <div class="co-field full"><label for="coAddress">Street address</label><input id="coAddress" name="address" type="text" autocomplete="street-address" placeholder="House number and street"><small class="co-error"></small></div>
+                <div class="co-field full"><label for="coAddress2">Apartment / suite <span class="opt">(optional)</span></label><input id="coAddress2" name="address2" type="text" autocomplete="address-line2"><small class="co-error"></small></div>
+                <div class="co-field"><label for="coCity">City</label><input id="coCity" name="city" type="text" autocomplete="address-level2"><small class="co-error"></small></div>
+                <div class="co-field"><label for="coState">State / Province</label><input id="coState" name="state" type="text" autocomplete="address-level1"><small class="co-error"></small></div>
+                <div class="co-field"><label for="coZip">Postal code</label><input id="coZip" name="zip" type="text" autocomplete="postal-code"><small class="co-error"></small></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="co-section">
+              <legend><span class="num">3</span> Payment</legend>
+              <div class="option-list" id="paymentOptions">
+                <label class="option-card">
+                  <input type="radio" name="payment" value="card" checked>
+                  <i class="fa-solid fa-credit-card opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Credit / Debit Card</span><span class="opt-sub">Visa, Mastercard, American Express</span></span>
+                </label>
+                <label class="option-card">
+                  <input type="radio" name="payment" value="bank">
+                  <i class="fa-solid fa-building-columns opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Bank Transfer</span><span class="opt-sub">Details emailed · watch reserved 48 hours</span></span>
+                </label>
+                <label class="option-card" id="payBoutiqueCard">
+                  <input type="radio" name="payment" value="boutique">
+                  <i class="fa-solid fa-handshake opt-icon"></i>
+                  <span class="opt-main"><span class="opt-title">Pay at Boutique</span><span class="opt-sub">Available with Boutique Pickup only</span></span>
+                </label>
+              </div>
+
+              <div class="pay-panel" id="payPanelCard">
+                <div class="co-grid">
+                  <div class="co-field full"><label for="coCardName">Name on card</label><input id="coCardName" name="cc-name" type="text" autocomplete="cc-name" maxlength="60" placeholder="As printed on the card"><small class="co-error"></small></div>
+                  <div class="co-field full"><label for="coCardNumber">Card number</label><input id="coCardNumber" name="cc-number" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" maxlength="23"><small class="co-error"></small></div>
+                  <div class="co-field"><label for="coExpiry">Expiry (MM/YY)</label><input id="coExpiry" name="cc-exp" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5"><small class="co-error"></small></div>
+                  <div class="co-field"><label for="coCvv">CVV</label><input id="coCvv" name="cc-csc" type="password" inputmode="numeric" autocomplete="cc-csc" placeholder="•••" maxlength="4"><small class="co-error"></small></div>
+                </div>
+                <div class="secure-note"><i class="fa-solid fa-lock"></i> Demo checkout: card details are checked in your browser and never stored or sent anywhere.</div>
+              </div>
+              <div class="pay-panel" id="payPanelBank" hidden><p>Our concierge will email bank transfer details with your order number. Your timepiece stays reserved for 48 hours while we await payment.</p></div>
+              <div class="pay-panel" id="payPanelBoutique" hidden><p>Pay in person at our New York boutique when you collect. Please bring a valid photo ID and your order number.</p></div>
+            </fieldset>
+
+            <fieldset class="co-section">
+              <legend><span class="num">4</span> Notes</legend>
+              <div class="co-field"><label for="coNotes">Order notes <span class="opt">(optional)</span></label><textarea id="coNotes" name="notes" placeholder="Gift message, bracelet sizing, delivery instructions…"></textarea></div>
+            </fieldset>
+
+            <label class="co-terms" id="coTermsWrap">
+              <input type="checkbox" id="coTerms" name="terms">
+              <span>I agree to the terms of sale, the insured-delivery policy and the 5-year international warranty terms.</span>
+            </label>
+          </div>
+
+          <div class="checkout-footer">
+            <div class="cart-summary-row"><span>Subtotal</span><span id="coSubtotal">$0.00</span></div>
+            <div class="cart-summary-row"><span>Tax (8%)</span><span id="coTax">$0.00</span></div>
+            <div class="cart-summary-row"><span id="coShipLabel">Shipping</span><span id="coShipping">$0.00</span></div>
+            <div class="cart-summary-row total-row"><span>Total USD</span><span id="coTotal">$0.00</span></div>
+            <button type="submit" class="btn-primary" id="placeOrderBtn"><i class="fa-solid fa-lock"></i> PLACE ORDER</button>
+            <button type="button" class="btn-secondary" onclick="backToBag()">BACK TO BAG</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- VIEW 3: CONFIRMATION -->
+      <div class="cart-view" id="cartViewDone"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. HERO LANDING SECTION
+       ========================================== -->
+  <section class="hero" id="hero" aria-label="Alberto Watches introduction">
+    <canvas id="c" aria-hidden="true"></canvas>
+    <div class="vig"></div>
+    <div class="bar t"></div>
+    <div class="bar b"></div>
+
+    <div class="copy">
+      <h1>ALBERTO WATCHES</h1>
+      <div class="rule"></div>
+      <p class="sub">LUXURY RETAIL &nbsp;&bull;&nbsp; APPRAISALS &nbsp;&bull;&nbsp; REPAIRS</p>
+      <a class="cta" href="#product-catalog-section">EXPLORE COLLECTIONS</a>
+    </div>
+
+    <button class="sound" id="replay" type="button">REPLAY INTRO</button>
+  </section>
+
+  
+
+  <!-- ==========================================
+       4. EXPLODED VIEW ANIMATION SECTION
+       ========================================== -->
+  <div id="exploded-nav"><button class="exploded-btn exploded-ghost" id="exploded-nav-btn">Reserve</button></div>
+
+<section id="exploded-scroll" aria-label="Product hero">
+ <div class="exploded-stage">
+  <div class="exploded-glow"></div>
+  <div id="exploded-caption">Exploded View</div>
+  <svg id="exploded-lines"></svg>
+  <div id="exploded-watch" role="img" aria-label="Rose gold Chiron Tourbillon watch, exploded view"></div>
+  <div id="exploded-labels"></div>
+  <div id="exploded-brand">
+   <div class="exploded-eyebrow">Genève · Flagship</div>
+   <div class="exploded-brand-name">JACOB &amp; CO</div>
+   <div class="exploded-brand-sub">Bugatti Chiron Tourbillon</div>
+   <div class="exploded-brand-meta">18K Rose Gold · W16 Engine · Ref. BU200.40.AA.AA.BBRUA</div>
+  </div>
+  <div id="exploded-hint">Scroll · Tap for details</div>
+  <div id="exploded-progress"></div>
+ </div>
+</section>
+<section id="exploded-end"><div><h2>Sixteen cylinders. One wrist.</h2><p>Every component, revealed. Reserve a private viewing.</p><button class="exploded-btn" id="exploded-end-btn">View details</button></div></section>
+
+<div class="exploded-modal" id="exploded-details-modal"><div class="exploded-card" role="dialog" aria-modal="true">
+ <button class="exploded-close" data-close>×</button>
+ <div class="exploded-detail-grid">
+  <div class="exploded-detail-img"><div class="exploded-thumb"></div></div>
+  <div class="exploded-detail-body">
+   <div class="exploded-eyebrow">Jacob &amp; Co · Bugatti</div>
+   <h3>Chiron Tourbillon<br>Rose Gold</h3>
+   <div class="exploded-ref">REF. BU200.40.AA.AA.BBRUA</div>
+   <div class="exploded-price">$445,500</div>
+   <div class="exploded-price-note">USD · list price at authorized retailers. Taxes may vary by region.</div>
+   <ul class="exploded-specs">
+    <li><span>Case</span><span>18K rose gold</span></li>
+    <li><span>Movement</span><span>JCAM37 manual winding</span></li>
+    <li><span>Engine</span><span>16-cylinder piston W16</span></li>
+    <li><span>Components / Jewels</span><span>578 / 51</span></li>
+    <li><span>Power reserve</span><span>60 hours</span></li>
+    <li><span>Water resistance</span><span>30 m</span></li>
+    <li><span>Strap</span><span>Rubber, rose gold deployant</span></li>
+   </ul>
+   <button class="exploded-btn" id="exploded-book-btn">Book now</button>
+  </div>
+ </div>
+</div></div>
+
+<div class="exploded-modal" id="exploded-booking-modal"><div class="exploded-card exploded-narrow" id="exploded-booking-card" role="dialog" aria-modal="true">
+ <button class="exploded-close" data-close>×</button>
+ <div class="exploded-formhead"><div class="exploded-eyebrow">Private reservation</div><h3>Book your timepiece</h3></div>
+ <form class="exploded-form" id="exploded-form">
+  <label>Full name</label><input name="name" required minlength="2" maxlength="60" placeholder=" " autocomplete="name" title="Alphabets only">
+  <label>Email</label><input name="email" type="email" required placeholder=" " autocomplete="email">
+  <div class="exploded-row"><div><label>Phone</label><input name="phone" type="tel" required pattern="[0-9+()\- ]{7,18}" placeholder=" " autocomplete="tel"></div><div><label>Country</label><input name="country" required placeholder=" " autocomplete="country-name"></div></div>
+  <div class="exploded-row"><div><label>Preferred date</label><input name="date" type="date" id="exploded-date" required></div><div><label>Time</label><select name="time" required><option value="">Select</option><option>10:00</option><option>12:00</option><option>14:00</option><option>16:00</option><option>18:00</option></select></div></div>
+  <div class="exploded-total"><small>Price</small><span>$445,500</span></div>
+  <button class="exploded-btn" style="width:100%" type="submit">Confirm booking</button>
+ </form>
+ <div class="exploded-confirm">
+  <svg class="exploded-check" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/><path d="M30 52l14 14 27-30"/></svg>
+  <h3 class="exploded-up">Booking confirmed</h3>
+  <p class="exploded-up" id="exploded-msg"></p>
+  <div class="exploded-up"><span class="exploded-code" id="exploded-code"></span></div>
+  <div class="exploded-up"><button class="exploded-btn exploded-ghost" data-close>Close</button></div>
+ </div>
+</div></div>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ==========================================
+     MOVING BRAND NAMES - HTML
+     Displays continuously moving watch brands
+     ========================================== -->
+
+<div class="authorized-brands-bar">
+
+  <h4 class="brands-bar-title">
+    AUTHORIZED RETAILER &amp; DEALER FOR
+  </h4>
+
+  <div class="brand-marquee">
+
+    <div class="brand-marquee-track">
+
+      <!-- First group of brand names -->
+      <div class="brand-marquee-group">
+        <span class="brand-name-item">ROLEX</span>
+        <span class="brand-name-item">MICHAEL KORS</span>
+        <span class="brand-name-item">CITIZEN ECO-DRIVE</span>
+        <span class="brand-name-item">BULOVA</span>
+        <span class="brand-name-item">TAG HEUER</span>
+      </div>
+
+      <!-- Duplicate group for seamless continuous scrolling -->
+      <div class="brand-marquee-group" aria-hidden="true">
+        <span class="brand-name-item">ROLEX</span>
+        <span class="brand-name-item">MICHAEL KORS</span>
+        <span class="brand-name-item">CITIZEN ECO-DRIVE</span>
+        <span class="brand-name-item">BULOVA</span>
+        <span class="brand-name-item">TAG HEUER</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- ==========================================
+       6. PRODUCT CATALOG & LINE-UPS SECTION
+       ========================================== -->
+  <section id="product-catalog-section" class="product-catalog-wrapper">
+    <div class="container">
+      <div class="section-title-group">
+        <span class="section-tag">CURATED LINE-UP</span>
+        <h2 class="section-heading">EXPLORE TIMEPIECES</h2>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="category-filter-tabs">
+        <button class="custom-tab-button active" onclick="filterProductLineup('all', event)">All Line-ups</button>
+        <button class="custom-tab-button" onclick="filterProductLineup('luxury', event)">Luxury</button>
+        <button class="custom-tab-button" onclick="filterProductLineup('vintage', event)">Vintage</button>
+        <button class="custom-tab-button" onclick="filterProductLineup('smart', event)">Smart Watches</button>
+      </div>
+
+      <!-- Dynamically Populated Product Grid -->
+      <div class="dynamic-product-grid" id="productGridContainer">
+        <!-- JS renders product cards here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       7. WATCHMAKING TECHNOLOGY SECTION
+       ========================================== -->
+  <section id="technology-section" class="technology-showcase-section">
+    <div class="container">
+      <div class="section-title-group">
+        <span class="section-tag">INNOVATION & PRECISION</span>
+        <h2>WATCHMAKING TECHNOLOGY</h2>
+      </div>
+      <div class="technology-cards-grid">
+        <div class="tech-feature-card">
+          <i class="fa-solid fa-solar-panel"></i>
+          <h3>Citizen Eco-Drive</h3>
+          <p>Harnesses light from any natural or artificial source to keep watches running without battery replacement.</p>
+        </div>
+        <div class="tech-feature-card">
+          <i class="fa-solid fa-gear"></i>
+          <h3>Automatic Tourbillon</h3>
+          <p>Counteracts gravity effects on watch accuracy through rotating mechanical cages engineered in Switzerland.</p>
+        </div>
+        <div class="tech-feature-card">
+          <i class="fa-solid fa-microchip"></i>
+          <h3>Smart Chrono Hybrid</h3>
+          <p>Combines traditional mechanical hands with heart-rate sensor arrays and Bluetooth connectivity.</p>
+        </div>
+        <div class="tech-feature-card">
+          <i class="fa-solid fa-gem"></i>
+          <h3>Precisionist Quartz</h3>
+          <p>High-frequency 262kHz vibrational quartz technology for continuous sweeping second hand precision.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       8. SERVICES & REPAIR SECTION
+       ========================================== -->
+  <section id="services-repair-section" class="services-repair-wrapper">
+    <div class="container">
+      <div class="services-promo-banner">
+        <div class="services-text-content">
+          <h3>FULL-SERVICE REPAIR & APPRAISAL</h3>
+          <p>At Alberto Watch Company, our certified horologists provide complete repair, battery replacement, seal testing, and official certified appraisal reports for luxury watch insurance.</p>
+          <ul class="service-checklist">
+            <li><i class="fa-solid fa-check"></i> Complete Mechanical Movement Overhauls</li>
+            <li><i class="fa-solid fa-check"></i> Ultrasonic Case & Bracelet Refinishing</li>
+            <li><i class="fa-solid fa-check"></i> Official Certified Value Appraisals</li>
+          </ul>
+          <a class="custom-tab-button active" href="#repair-request-section">Book Service</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       9. PRICE LIST SECTION
+       ========================================== -->
+  <section id="price-list-section" class="price-list-wrapper">
+    <div class="container">
+      <div class="section-title-group">
+        <span class="section-tag">TRANSPARENT PRICING</span>
+        <h2>RETAIL & SERVICE PRICE LIST</h2>
+      </div>
+      <div class="table-scroll">
+      <table class="retail-price-table">
+        <thead>
+          <tr>
+            <th>Item / Service</th>
+            <th>Category / Brand</th>
+            <th>Specification</th>
+            <th>Price (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Submariner Date</td>
+            <td>Rolex / Luxury</td>
+            <td>Oystersteel, Black Dial</td>
+            <td>$14,200.00</td>
+          </tr>
+          <tr>
+            <td>Promaster Nighthawk</td>
+            <td>Citizen / Eco-Drive</td>
+            <td>Solar Powered, Dual Time</td>
+            <td>$495.00</td>
+          </tr>
+          <tr>
+            <td>Precisionist Chronograph</td>
+            <td>Bulova / Luxury</td>
+            <td>262kHz Quartz, Curved Crystal</td>
+            <td>$895.00</td>
+          </tr>
+          <tr>
+            <td>Bradshaw Gold-Tone</td>
+            <td>Michael Kors / Smart</td>
+            <td>WearOS Touchscreen</td>
+            <td>$350.00</td>
+          </tr>
+          <tr>
+            <td>Mechanical Overhaul Service</td>
+            <td>Maintenance</td>
+            <td>Complete Disassembly & Lubrication</td>
+            <td>$250.00+</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       10. SHOWROOM GALLERY SECTION
+       ========================================== -->
+  <section id="gallery-section" class="gallery-showcase-wrapper">
+    <div class="container">
+      <div class="section-title-group">
+        <span class="section-tag">SHOWROOM & BOUTIQUE</span>
+        <h2>WATCH GALLERY</h2>
+      </div>
+      <div class="gallery-images-grid">
+        <div class="gallery-item-card"><img src="TAG Heuer Monaco Chronograph.PNG" alt="Watch Gallery 1"></div>
+        <div class="gallery-item-card"><img src="Cartier Santos Carrée.PNG" alt="Watch Gallery 2"></div>
+        <div class="gallery-item-card"><img src="Patek Philippe Grand Complications.PNG" alt="Watch Gallery 3"></div>
+        <div class="gallery-item-card"><img src="Rolex Daytona Paul Newman.PNG" alt="Watch Gallery 4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       11. ABOUT US & STORE LOCATOR SECTION
+       ========================================== -->
+  <section id="about-contact-section" class="about-contact-wrapper">
+  <div class="container">
+
+    <div class="about-contact-grid">
+
+      <div class="info-content-box">
+        <h3>ABOUT ALBERTO WATCH COMPANY</h3>
+        <p>Founded on a passion for horological excellence, Alberto Watch Company is a full-service watch repair, appraisal, and retail establishment offering the world's finest luxury timepieces.</p>
+        <p>We combine centuries-old craftsmanship with modern retail standards, catering to dedicated watch collectors and daily buyers alike.</p>
+      </div>
+
+      <div class="info-content-box">
+        <h3>STORE LOCATOR &amp; CONTACT</h3>
+        <p>Visit our flagship boutique and authorized service center.</p>
+
+        <ul class="contact-details-list">
+          <li><i class="fa-solid fa-location-dot"></i> Location reference: Karachi, Pakistan</li>
+          <li><i class="fa-solid fa-envelope"></i> contact@albertowatchcompany.com</li>
+          <li><i class="fa-solid fa-phone"></i> +1 (800) 555-2523 / +1 (212) 555-9821</li>
+          <li><i class="fa-solid fa-clock"></i> Mon - Sat: 10:00 AM - 7:00 PM | Sun: Closed</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- KARACHI LOCATION MAP -->
+    <div class="store-map-wrapper">
+      <div class="store-map-heading">
+        <span class="section-tag">FIND US</span>
+        <h3>OUR LOCATION</h3>
+        <p>Explore our location reference in Karachi, Pakistan.</p>
+      </div>
+
+      <div class="store-map-container">
+        <iframe
+          src="https://www.google.com/maps?q=Karachi,+Pakistan&output=embed"
+          title="Map showing Karachi, Pakistan"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+  <!-- ==========================================
+     CONTACT BOX - HTML
+     Repair request form
+     ========================================== -->
+
+<section id="repair-request-section" class="repair-section">
+<div class="container">
+<div class="repair-form-card">
+
+  <!-- Form heading -->
+  <div class="repair-form-heading">
+    <span>PERSONALIZED WATCH CARE</span>
+    <h4>Request a Repair</h4>
+  </div>
+
+  <!-- Repair request form -->
+  <form
+    action="mailto:contact@albertowatchcompany.com"
+    method="post"
+    enctype="text/plain">
+
+    <div class="repair-form-grid">
+
+      <!-- Customer full name -->
+      <div class="repair-form-field">
+        <label for="repair-name">Full Name</label>
+        <input
+          type="text"
+          id="repair-name"
+          name="Full Name"
+          maxlength="60"
+          title="Alphabets only"
+          placeholder="Enter your full name"
+          required>
+      </div>
+
+      <!-- Customer email -->
+      <div class="repair-form-field">
+        <label for="repair-email">Email Address</label>
+        <input
+          type="email"
+          id="repair-email"
+          name="Email Address"
+          placeholder="Enter your email"
+          required>
+      </div>
+
+      <!-- Customer phone number -->
+      <div class="repair-form-field">
+        <label for="repair-phone">Phone Number</label>
+        <input
+          type="tel"
+          id="repair-phone"
+          name="Phone Number"
+          placeholder="Enter your phone number"
+          required>
+      </div>
+
+      <!-- Watch brand selection -->
+      <div class="repair-form-field">
+        <label for="repair-brand">Watch Brand</label>
+
+        <select id="repair-brand" name="Watch Brand" required>
+          <option value="" disabled selected>Select brand</option>
+          <option>Rolex</option>
+          <option>Citizen</option>
+          <option>Michael Kors</option>
+          <option>Bulova</option>
+          <option>TAG Heuer</option>
+          <option>Omega</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Service selection -->
+      <div class="repair-form-field full-width">
+        <label for="repair-service">Service Required</label>
+
+        <select id="repair-service" name="Service Required" required>
+          <option value="" disabled selected>Select a service</option>
+          <option>Mechanical Repair</option>
+          <option>Battery Replacement</option>
+          <option>Cleaning &amp; Polishing</option>
+          <option>Water Resistance Testing</option>
+          <option>Watch Appraisal</option>
+          <option>Other / Not Sure</option>
+        </select>
+      </div>
+
+      <!-- Repair issue description -->
+      <div class="repair-form-field full-width">
+        <label for="repair-message">Describe the Issue</label>
+
+        <textarea
+          id="repair-message"
+          name="Repair Details"
+          placeholder="Tell us a little about your watch and the service it needs..."
+          required></textarea>
+      </div>
+
+    </div>
+
+    <!-- Form submission button -->
+    <button type="submit" class="repair-submit-btn">
+      SEND SERVICE REQUEST
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+    <!-- Submission information -->
+    <p class="repair-form-note">
+      Submitting this request will open your default email
+      application to send the details to our service team.
+    </p>
+
+  </form>
+</div>
+</div>
+</section>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-columns-grid">
+        <div class="footer-column-links">
+          <div class="footer-brand">ALBERTO<span>WATCH CO.</span></div>
+          <p>Authorized luxury retailer, certified appraisals and full-service watch repair in the heart of New York.</p>
+        </div>
+        <div class="footer-column-links">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#product-catalog-section">Products</a></li>
+            <li><a href="#technology-section">Technology</a></li>
+            <li><a href="#gallery-section">Gallery</a></li>
+            <li><a href="#price-list-section">Price List</a></li>
+          </ul>
+        </div>
+        <div class="footer-column-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services-repair-section">Repair &amp; Appraisal</a></li>
+            <li><a href="#repair-request-section">Request a Repair</a></li>
+            <li><a href="#about-contact-section">Store Locator</a></li>
+          </ul>
+        </div>
+        <div class="footer-column-links">
+          <h4>Contact</h4>
+          <ul>
+            <li>740 Fifth Avenue, Suite 1200<br>New York, NY 10019</li>
+            <li><a href="mailto:contact@albertowatchcompany.com">contact@albertowatchcompany.com</a></li>
+            <li>+1 (800) 555-2523</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom-bar">&copy; 2026 Alberto Watch Company. All rights reserved.</div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================
+       13. PRODUCT DETAILS MODAL POPUP
+       ========================================== -->
+  <div class="product-modal-overlay" id="productDetailsModal" onclick="if(event.target===this)closeProductModal()">
+    <div class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalWatchTitle">
+      <button class="modal-close-button" onclick="closeProductModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <img src="" alt="" class="modal-watch-img" id="modalWatchImg">
+      <div class="modal-content-body">
+        <span class="modal-brand-tag" id="modalBrandTag">BRAND</span>
+        <h3 id="modalWatchTitle">Product Title</h3>
+        <div class="modal-price-tag" id="modalWatchPrice">$0.00</div>
+        <p id="modalWatchDesc">Product description details...</p>
+        <div class="modal-specs-list">
+          <div>Line-up: <span id="modalLineupText">Luxury</span></div>
+          <div>Movement: <span id="modalMovementText">Automatic</span></div>
+          <div>Warranty: <span>5 Years International</span></div>
+        </div>
+        <button class="custom-tab-button active" id="modalAddToCartBtn" style="width: 100%; padding: 12px; font-weight: bold;">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Link -->
+  <script src="remastered.js"></script>
+</body>
+</html>
